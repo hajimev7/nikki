@@ -53,6 +53,7 @@ export default function Top() {
     createtimeinput,
   );
 
+  const router = useRouter();
   const handleSelectNikki = (
     id: number,
     title: string,
@@ -71,19 +72,23 @@ export default function Top() {
     router.push(path);
   };
   
-  
-  const deleteItem = index => {
-    const newTodos = nikkiList.map((listItem) => listItem.id)
-    newTodos.splice(index,1)
-    setNikkiList(newTodos)
-}
+  console.log(nikkiList)
+  //削除処理、TRASHページへ遷移
+  const deleteItem = (id: number) => {
+    //topから削除処理
+    const deleteNikki = nikkiList.filter(
+      (nikki: { id: number }) => nikki.id !== id
+    );
+
+    setNikkiList(deleteNikki);
+  };
 
   const resetButtonClick = () => {
     setInput("");
     setcreatetimeinput("");
   };
 
-  const router = useRouter();
+ 
 
 
   return (
@@ -286,7 +291,7 @@ export default function Top() {
                                 _hover={{
                                   cursor: "pointer",
                                 }}
-                                onClick={deleteItem}
+                                onClick={() => deleteItem(nikki.id)}
                               />
                             </HStack>
                           </Td>

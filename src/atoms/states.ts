@@ -20,3 +20,9 @@ export const nikkiItemState = atom({
   default: [],
   effects_UNSTABLE: [persistAtom],
 })
+
+export const taijuuListState = atom({
+  key:'taijuuList',
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+})

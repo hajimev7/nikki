@@ -5,15 +5,17 @@ type nikkiList = {
     createAt: string;
     updateAt: string;
 }
-
 export const filterNikkiList = (
     word: string,
-    nikkiList: any
+    nikkiList: any,
+    createAt: string,
 ) => {
-    let filterNikkis: nikkiList[] = [];
-    nikkiList.forEach((nikki: any) => {
+  let filterNikkis: nikkiList[] = [];
+    console.log(filterNikkis)
+    nikkiList.forEach((nikki: any) => {  
     if (
-      (word === "" || nikki.title.match(word))
+      (word === "" || nikki.title.match(word)) &&
+      (createAt === "" || nikki.createAt.match(createAt))
     ) {
       filterNikkis.push(nikki);
     }
