@@ -26,3 +26,9 @@ export const taijuuListState = atom({
   default: [],
   effects_UNSTABLE: [persistAtom],
 })
+
+export const taijuuItemState = atom({
+  key:'nikkiItem',
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+})
