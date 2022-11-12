@@ -4,6 +4,8 @@ type nikkiList = {
     detail: string;
     createAt: string;
     updateAt: string;
+    sleeptimemokuhyou: string;
+    sleeptimejisseki : string;
 }
 export const filterNikkiList = (
     word: string,

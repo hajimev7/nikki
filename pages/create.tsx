@@ -8,19 +8,23 @@ import { nikkiListState} from "../src/atoms/states"
 import { useRouter } from "next/router";
 import { changeDateFormat } from "../util/changeDateFormat";
 
-function create() {
+export default function Create() {
   type Inputs = {
     id: string;
     title: string;
     detail: string;
+    sleeptimemokuhyou: string;
+    sleeptimejisseki : string;
   }
 
   type NikkiList = {
-    id: null | number;
-    title: null | string;
-    detail: null | string;
-    createAt: null | string;
-    updateAt: null | string;
+    id: number;
+    title: string;
+    detail: string;
+    createAt: string;
+    updateAt: string;
+    sleeptimemokuhyou : string;
+    sleeptimejisseki : string;
   }
 
   const [NikkiList, setNikkiList] = useRecoilState<any>(nikkiListState)
@@ -32,13 +36,15 @@ function create() {
     formState: {errors},
    } = useForm<Inputs>()
 
-   const onSubmit : SubmitHandler<Inputs> = ({title,detail}) =>{
+   const onSubmit : SubmitHandler<Inputs> = ({title,detail,sleeptimemokuhyou,sleeptimejisseki}) =>{
     setNikkiList((oldNikkiList: Array<NikkiList>) => [
       ...oldNikkiList,
       {
         id: Math.floor(Math.random() * 1000).toString(16),
         title,
         detail,
+        sleeptimemokuhyou,
+        sleeptimejisseki,
         createAt: changeDateFormat(new Date()),
         updateAt: changeDateFormat(new Date()),
       }
@@ -75,10 +81,56 @@ function create() {
                 fontWeight="bold"
                 bg="#68D391"
                 borderRadius="50px"
+                onClick={() => router.back()}
                 >Back
               </Button>
           </Flex>
           <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)} >
+          <Flex w="100%" bg="yellow">
+          <FormControl>
+              <FormLabel 
+                m="0"
+                fontSize="24px"
+                lineHeight="24px"
+                color="blackAlpha.800"
+                htmlFor='title'
+              >
+                起床時間 : 
+              
+              <Input
+                id="sleeptimemokuhyou"
+                w="30%"
+                h="18px"
+                mt="4px"
+                p="8px 16px"
+                fontSize="24px"
+                fontWeight="1px"
+                borderColor="blackAlpha.800"
+                borderRadius="10px"
+                placeholder='目標'
+                {...register("sleeptimemokuhyou", {
+                  required: "sleeptimemokuhyouは必須です",
+                })}
+              />
+              
+              <Input
+                id="sleeptimemojisseki"
+                w="30%"
+                h="18px"
+                mt="4px"
+                p="8px 16px"
+                fontSize="24px"
+                fontWeight="1px"
+                borderColor="blackAlpha.800"
+                borderRadius="10px"
+                placeholder='実績'
+                {...register("sleeptimejisseki", {
+                  required: false,
+                })}
+              />
+             </FormLabel>
+            </FormControl>
+            </Flex>
             <FormControl>
               <FormLabel 
                 m="0"
@@ -156,5 +208,3 @@ function create() {
     </>
   )
 }
-
-export default create

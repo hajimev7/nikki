@@ -1,19 +1,15 @@
-type taijuuList = {
-  id: number;
-  taijuu: string;
-  createAt: string;
-  updateAt: string;
-}
+import { TaijuuListType } from "../src/atoms/states";
+
 export const filterTaijuuList = (
   word: string,
-  taijuuList: any,
+  taijuuList: TaijuuListType[],
   createAt: string,
 ) => {
-let filterTaijuus: taijuuList[] = [];
+let filterTaijuus: TaijuuListType[] = [];
   console.log(filterTaijuus)
-  taijuuList.forEach((taijuu: any) => {  
+  taijuuList.forEach((taijuu) => {  
   if (
-    (word === "" || taijuu.title.match(word)) &&
+    (word === "" || taijuu.taijuu.match(word)) &&
     (createAt === "" || taijuu.createAt.match(createAt))
   ) {
     filterTaijuus.push(taijuu);

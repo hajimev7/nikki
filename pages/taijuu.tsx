@@ -4,24 +4,17 @@ import Head from "next/head";
 import { VStack, Container, Text, Spacer, Button, Flex, FormControl, FormLabel, Input, Textarea } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {useRecoilState, useSetRecoilState} from 'recoil'
-import { taijuuListState} from "../src/atoms/states"
+import { TaijuuListType, taijuuListState} from "../src/atoms/states"
 import { useRouter } from "next/router";
 import { changeDateFormat } from "../util/changeDateFormat";
 
-function taijuu() {
+export default function Taijuu() {
   type Inputs = {
     id: string;
     taijuu: string;
   }
 
-  type TaijuuList = {
-    id: null | number;
-    taijuu: null | string;
-    createAt: null | string;
-    updateAt: null | string;
-  }
-
-  const [TaijuuiList, setTaijuuList] = useRecoilState<any>(taijuuListState)
+  const [TaijuuiList, setTaijuuList] = useRecoilState(taijuuListState)
   const router = useRouter();
   const {
     register,
@@ -31,16 +24,16 @@ function taijuu() {
    } = useForm<Inputs>()
 
    const onSubmit : SubmitHandler<Inputs> = ({taijuu}) =>{
-    setTaijuuList((oldTaijuuList: Array<TaijuuList>) => [
+    setTaijuuList((oldTaijuuList: Array<TaijuuListType>) => [
       ...oldTaijuuList,
       {
-        id: Math.floor(Math.random() * 1000).toString(16),
+        id: Math.floor(Math.random() * 1000),
         taijuu,
         createAt: changeDateFormat(new Date()),
         updateAt: changeDateFormat(new Date()),
       }
     ])
-    router.push("/toptaijuu");
+    router.push("/TopTaijuu");
   }
 
   // const addNikki = (data: Inputs) => {
@@ -56,13 +49,13 @@ function taijuu() {
   return (
     <>
       <Head>
-        <title>Taijuu New</title>
+        <title>体重入力ページ</title>
       </Head>
       <Header/>
       <Container mt="16px" p="0" w="84.3755%" maxW="1080px">    
         <VStack>
           <Flex w="100%">
-            <Text>NEW Taijuu</Text>
+            <Text>体重入力ページ</Text>
               <Spacer/>
               <Button
                 w="112px"
@@ -72,6 +65,7 @@ function taijuu() {
                 fontWeight="bold"
                 bg="#68D391"
                 borderRadius="50px"
+                onClick={() => router.back()}
                 >Back
               </Button>
           </Flex>
@@ -82,12 +76,12 @@ function taijuu() {
                 fontSize="24px"
                 lineHeight="24px"
                 color="blackAlpha.800"
-                htmlFor='title'
+                htmlFor='taijuu'
               >
-                TAIJUU
+                体重を入力していください
               </FormLabel>
               <Input
-                id="title"
+                id="taijuu"
                 w="100%"
                 h="18px"
                 mt="4px"
@@ -129,5 +123,3 @@ function taijuu() {
     </>
   )
 }
-
-export default taijuu

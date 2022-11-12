@@ -9,6 +9,20 @@ const { persistAtom } = recoilPersist();
 //   detail: string
 // }
 
+export type TaijuuListType = {
+  id:  number;
+  taijuu: string;
+  createAt:  string;
+  updateAt:  string;
+}
+
+export type taijuuItemType = {
+  id: number;
+  taijuu: string;
+  createAt: string;
+  updateAt: string;
+};
+
 export const nikkiListState = atom({
   key:'nikkiList',
   default: [],
@@ -21,14 +35,30 @@ export const nikkiItemState = atom({
   effects_UNSTABLE: [persistAtom],
 })
 
-export const taijuuListState = atom({
+export const taijuuListState = atom<TaijuuListType[]>({
   key:'taijuuList',
   default: [],
   effects_UNSTABLE: [persistAtom],
 })
 
 export const taijuuItemState = atom({
-  key:'nikkiItem',
+  key:'taijuuItem',
   default: [],
   effects_UNSTABLE: [persistAtom],
 })
+
+// trashやdraftのTODO LISTとは別
+export const todoListState = atom({
+  key: "todoList",
+  default: [],
+  // 値の永続化
+  effects_UNSTABLE: [persistAtom],
+});
+
+// 個別のTODOを保持。EditやShowで使用。
+export const todoItemState = atom({
+  key: "todoItem",
+  default: {},
+  // 値の永続化
+  effects_UNSTABLE: [persistAtom],
+});

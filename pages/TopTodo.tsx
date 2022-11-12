@@ -24,8 +24,8 @@ import {
   Tbody,
   ButtonProps,
 } from "@chakra-ui/react";
-import { nikkiListState, nikkiItemState } from "../src/atoms/states";
-import { filterNikkiList } from "../util/filterNikkiLit";
+import { todoListState, todoItemState } from "../src/atoms/states";
+import { filterTodoList } from "../util/filterTodoList";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   DeleteIcon,
@@ -35,7 +35,6 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "@chakra-ui/icons";
-import { useRouter } from 'next/router'
 import {
   Paginator,
   Previous,
@@ -43,56 +42,60 @@ import {
   PageGroup,
   usePaginator,
 } from "chakra-paginator";
-import { Layout } from "../components/Layout";
+import { useRouter } from 'next/router'
+import StatusButton from "../components/StatusButton";
+import PrioritySelect from "../components/PrioritySelect";
+
 
 export default function Top() {
   const [createtimeinput, setcreatetimeinput] = useState("");
   const [isClient, setIsClient] = useState(false);
   const [input, setInput] = useState("");
-  const [nikkiList, setNikkiList] = useRecoilState(nikkiListState);
-  const setNikkiItem = useSetRecoilState(nikkiItemState);
+  const [statusSelect, setStatusSelect] = useState("");
+  const [prioritySelect, setPrioritySelect] = useState("");
+  const [todoList, settodoList] = useRecoilState(todoListState);
+  const setTodoItem = useSetRecoilState(todoItemState);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
-  const filterNikkis = filterNikkiList(
+  const filterTodos = filterTodoList(
     input,
-    nikkiList,
-    createtimeinput,
+    statusSelect,
+    prioritySelect,
+    todoList
   );
 
   const router = useRouter();
-  const handleSelectNikki = (
+  const handleSelectTodo = (
     id: number,
     title: string,
     detail: string,
+    status: 0 | 1 | 2,
+    priority: string,
     createAt: string,
     updateAt: string,
-    sleeptimemokuhyou : string,
-    sleeptimejisseki : string,
     path: string
   ) => {
-    setNikkiItem({
+    setTodoItem({
       id,
       title,
       detail,
       createAt,
       updateAt,
-      sleeptimemokuhyou,
-      sleeptimejisseki,
     });
     router.push(path);
   };
   
-  console.log(nikkiList)
+  console.log(todoList)
   //削除処理、TRASHページへ遷移
   const deleteItem = (id: number) => {
     //topから削除処理
-    const deleteNikki = nikkiList.filter(
-      (nikki: { id: number }) => nikki.id !== id
+    const deletetodo = todoList.filter(
+      (todo: { id: number }) => todo.id !== id
     );
 
-    setNikkiList(deleteNikki);
+    settodoList(deletetodo);
   };
 
   const resetButtonClick = () => {
@@ -125,9 +128,11 @@ export default function Top() {
     w: 7,
     bg: "green.200",
   };
+ 
+
 
   return (
-    <Layout title="TOP">
+    <>
     <Header />
       <Container mt={`16px`}>
       <Flex w="100%">
@@ -138,7 +143,7 @@ export default function Top() {
           color="blackAlpha.800"
           mb={`15px`}
         >
-          日記 LIST
+          TODO LIST
           </Text>
           <Spacer/>
           <Button
@@ -160,8 +165,8 @@ export default function Top() {
             fontWeight="bold"
             bg="#68D391"
             borderRadius="50px"
-            onClick={() => router.push("TopTodo")}
-            >TODOページ
+            onClick={() => router.push("Top")}
+            >日記ページ
           </Button>
         </Flex>
         <Center>
@@ -239,7 +244,7 @@ export default function Top() {
                 variant={`outline`}
                 borderColor={`gray.400`}
                 icon={<EditIcon />}
-                onClick={() => router.push("/Edit")}
+                onClick={() => router.push("/TodoEdit")}
               />
               <IconButton
                 aria-label="New"
@@ -250,7 +255,7 @@ export default function Top() {
                 variant={`outline`}
                 borderColor={`gray.400`}
                 icon={<ExternalLinkIcon />}
-               onClick={() => router.push("/Create")}
+               onClick={() => router.push("/CreateTodo")}
               />
             </Stack>
           </Flex>
@@ -260,21 +265,37 @@ export default function Top() {
               <Thead bgColor={`#68D391`}>
                 <Tr >
                   <Th
-                    textAlign={`center`}
                     fontFamily={`roboto`}
                     fontWeight={`bold`}
                     fontSize={`24px`}
-                    color={`blackAlpha`}
-                    py={`19px`}                 
+                    color={`blackAlpha.800`}
+                    py={`19px`}
                   >
-                    Title
+                    Task
                   </Th>
                   <Th
-                    textAlign={`center`}
                     fontFamily={`roboto`}
                     fontWeight={`bold`}
                     fontSize={`24px`}
-                    color={`blackAlpha`}
+                    color={`blackAlpha.800`}
+                    py={`19px`}
+                  >
+                    Status
+                  </Th>
+                  <Th
+                    fontFamily={`roboto`}
+                    fontWeight={`bold`}
+                    fontSize={`24px`}
+                    color={`blackAlpha.800`}
+                    py={`19px`}
+                  >
+                    Priority
+                  </Th>
+                  <Th
+                    fontFamily={`roboto`}
+                    fontWeight={`bold`}
+                    fontSize={`24px`}
+                    color={`blackAlpha.800`}
                     py={`19px`}
                   >
                     Create
@@ -283,29 +304,11 @@ export default function Top() {
                     fontFamily={`roboto`}
                     fontWeight={`bold`}
                     fontSize={`24px`}
-                    color={`blackAlpha`}
+                    color={`blackAlpha.800`}
                     py={`19px`}
                   >
                     Update
                   </Th>
-                  <Th
-                  fontFamily={`roboto`}
-                  fontWeight={`bold`}
-                  fontSize={`24px`}
-                  color={`blackAlpha.800`}
-                  py={`19px`}
-                >
-                  睡眠時間(目標)
-                </Th>
-                <Th
-                  fontFamily={`roboto`}
-                  fontWeight={`bold`}
-                  fontSize={`24px`}
-                  color={`blackAlpha.800`}
-                  py={`19px`}
-                >
-                 睡眠時間(実績)
-                </Th>
                 <Th
                   fontFamily={`roboto`}
                   fontWeight={`bold`}
@@ -319,89 +322,85 @@ export default function Top() {
               </Thead>
         
               {isClient && (
-                <Tbody>
-                  {filterNikkis.map((nikki)=>{
-                    return(
-                      <Tr key={nikki.id}>
-                        <Td
-                          fontWeight={`bold`}
-                          w={`150px`}
-                          textAlign="center"
-                          _hover={{
-                            cursor:"pointer"
-                          }}>
-                            {nikki.title}
-                          </Td>
-                          <Td
-                            w={`139.2px`}
-                            p={`0`}
-                            textAlign={`center`}
-                            lineHeight={`56px`}
-                          >
-                            {nikki.createAt}
-                          </Td>
-                          <Td
-                            w={`139.2px`}
-                            p={`0`}
-                            textAlign={`center`}
-                            lineHeight={`56px`}
-                          >
-                            {nikki.updateAt}
-                          </Td>
-                          <Td
-                            w={`139.2px`}
-                            p={`0`}
-                            textAlign={`center`}
-                            lineHeight={`56px`}
-                          >
-                            {nikki.sleeptimemokuhyou}
-                          </Td>
-                          <Td
-                            w={`139.2px`}
-                            p={`0`}
-                            textAlign={`center`}
-                            lineHeight={`56px`}
-                          >
-                            {nikki.sleeptimejisseki}
-                          </Td>
-
-                          <Td w={`139.2px`}>
-                          <Flex w="100%"　ml="auto">
-                            <HStack w={`56px`} mx={`auto`}>
-                              <EditIcon
-                                h={`24px`}
-                                w={`24px`}
-                                _hover={{
-                                  cursor: "pointer",
-                                }}
-                                onClick={() =>
-                                  handleSelectNikki(
-                                    nikki.id,
-                                    nikki.title,
-                                    nikki.detail,
-                                    nikki.createAt,
-                                    nikki.updateAt,
-                                    nikki.sleeptimemokuhyou,
-                                    nikki.sleeptimejisseki,
-                                    "/Edit"
-                                  )
-                                }                            
-                              />
-                              <DeleteIcon
-                                h={`24px`}
-                                w={`24px`}
-                                _hover={{
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => deleteItem(nikki.id)}
-                              />
-                            </HStack>
-                            </Flex>
-                          </Td>
-                      </Tr>
-                    )
-                  })}
-                </Tbody>
+                 <Tbody>
+                 {filterTodos.map((todo) => {
+                   return (
+                     <Tr key={todo.id}>
+                       <Td
+                         fontWeight={`bold`}
+                         w={`384px`}
+                         _hover={{
+                           cursor: "pointer",
+                         }}
+                         onClick={() =>
+                           handleSelectTodo(
+                             todo.id,
+                             todo.title,
+                             todo.detail,
+                             todo.status,
+                             todo.priority,
+                             todo.createAt,
+                             todo.updateAt,
+                             "/show"
+                           )
+                         }
+                       >
+                         {todo.title}
+                       </Td>
+                       <Td
+                         w={`139.2px`}
+                         p={`0`}
+                         textAlign={`center`}
+                         lineHeight={`56px`}
+                       >
+                         <StatusButton
+                           todoId={todo.id}
+                           defaultValue={todo.status}
+                         />
+                       </Td>
+                       <Td w={`139.2px`} p={`0`} lineHeight={`56px`}>
+                         <PrioritySelect
+                           todoId={todo.id}
+                           defaultValue={todo.priority}
+                         />
+                       </Td>
+                       <Td w={`139.2px`}>{todo.createAt}</Td>
+                       <Td w={`139.2px`}>{todo.updateAt}</Td>
+                       <Td w={`139.2px`}>
+                         <HStack w={`56px`} mx={`auto`}>
+                           <EditIcon
+                             h={`24px`}
+                             w={`24px`}
+                             _hover={{
+                               cursor: "pointer",
+                             }}
+                             onClick={() =>
+                               handleSelectTodo(
+                                 todo.id,
+                                 todo.title,
+                                 todo.detail,
+                                 todo.status,
+                                 todo.priority,
+                                 todo.createAt,
+                                 todo.updateAt,
+                                 "/TodoEdit"
+                               )
+                             }
+                           />
+                           <DeleteIcon
+                             h={`24px`}
+                             w={`24px`}
+                             _hover={{
+                               cursor: "pointer",
+                             }}
+                             onClick={() => deleteItem(todo.id)}
+                           />
+                         </HStack>
+                       </Td>
+                     </Tr>
+                   );
+                 })}
+               </Tbody>
               )}
               </Table>
             </TableContainer>
@@ -431,6 +430,6 @@ export default function Top() {
           </VStack>
         </Center>
       </Container>
-    </Layout>
+    </>
   )
 }

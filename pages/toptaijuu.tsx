@@ -50,7 +50,6 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import taijuu from "./taijuu";
 
 ChartJS.register(
   CategoryScale,
@@ -62,7 +61,7 @@ ChartJS.register(
   Legend
 );
 
-export default function toptaijuu() {
+export default function TopTaijuu() {
   const [createtimeinput, setcreatetimeinput] = useState("");
   const [isClient, setIsClient] = useState(false);
   const [input, setInput] = useState("");
@@ -122,30 +121,56 @@ export default function toptaijuu() {
     },
   };
 
-  const labels = filterTaijuus.map((taijuu) => {taijuu.createAt});
+  const labels = filterTaijuus.map(taijuu => taijuu.createAt);
 
   const data = {
     labels,
     datasets: [
       {
         label: "データ1",
-        data: filterTaijuus.map((taijuu) => {taijuu.taijuu}) ,
+        data: filterTaijuus.map(taijuu => taijuu.taijuu) ,
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
     ],
   };
 
-  console.log(taijuu)
+  console.log(taijuuList)
   console.log(filterTaijuus)
 
 
-
+  
   return (
     <>
     <Header />
+    <Flex w="100%">
+        <Spacer/>
+        <Button
+          w="112px"
+          h="40px"
+          mt="8px"
+          fontSize="18px"
+          fontWeight="bold"
+          bg="#68D391"
+          borderRadius="50px"
+          onClick={() => router.push("/Top")}
+          >Topページへ
+        </Button>
+        <Button
+          w="112px"
+          h="40px"
+          mt="8px"
+          fontSize="18px"
+          fontWeight="bold"
+          bg="#68D391"
+          borderRadius="50px"
+          onClick={() => router.back()}
+          >Back
+        </Button>
+    </Flex>
     <Line options={options} data={data} />
       <Container mt={`16px`}>
+     
         <Center>
           <VStack>
             <Flex w={`1080px`} mb={`33px`}>
@@ -157,28 +182,16 @@ export default function toptaijuu() {
                   color="blackAlpha.800"
                   mb={`15px`}
                 >
-                  日記 LIST
+                  体重 LIST
                 </Text>
                 <Flex w={`624px`}>
-                  <Text fontSize={`18px`} fontWeight={`bold`} w={`180px`}>
-                    SEARCH
-                  </Text>
                   <Text fontSize={`18px`} fontWeight={`bold`} w={`180px`}>
                     日付
                   </Text>
                 </Flex>
                 <Flex>
                   <HStack spacing={4}>
-                    <InputGroup>
-                      <InputRightElement pointerEvents="none">
-                      
-                      </InputRightElement>
-                      <Input
-                        value={input}
-                        type={`text`}
-                        onChange={(e) => setInput(e.target.value)}
-                      />
-                    </InputGroup>
+                    
                     <InputGroup>
                       <InputRightElement pointerEvents="none">
                       
@@ -231,7 +244,7 @@ export default function toptaijuu() {
                 variant={`outline`}
                 borderColor={`gray.400`}
                 icon={<EditIcon />}
-                onClick={() => router.push("/Edit")}
+                onClick={() => router.push("/TaijuuEdit")}
               />
               <IconButton
                 aria-label="New"
@@ -242,7 +255,7 @@ export default function toptaijuu() {
                 variant={`outline`}
                 borderColor={`gray.400`}
                 icon={<ExternalLinkIcon />}
-               onClick={() => router.push("/create")}
+               onClick={() => router.push("/Taijuu")}
               />
             </Stack>
           </Flex>
@@ -325,14 +338,15 @@ export default function toptaijuu() {
                                 _hover={{
                                   cursor: "pointer",
                                 }}
-                                //onClick={() =>
-                                  //handleSelectTaijuu(
-                                    //taijuu.id,
-                                    //taijuu.createAt,
-                                    //taijuu.updateAt,
-                                    //"/Edit"
-                                  //)
-                                //}                            
+                                onClick={() =>
+                                  handleSelectTaijuu(
+                                    taijuu.id,
+                                    taijuu.taijuu,
+                                    taijuu.createAt,
+                                    taijuu.updateAt,
+                                    "/TaijuuEdit"
+                                  )
+                                }                            
                               />
                               <DeleteIcon
                                 h={`24px`}

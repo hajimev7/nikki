@@ -17,39 +17,39 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { useRouter } from "next/router";
 import { Header } from "../components/Header";
-import { nikkiListState, nikkiItemState } from "../src/atoms/states";
+import { todoListState, todoItemState } from "../src/atoms/states";
 import { changeDateFormat } from "../util/changeDateFormat";
+
 
 type FormInput = {
   title: string;
   detail: string;
-  sleeptimemokuhyou : string;
-  sleeptimejisseki : string;
+  priority: string;
 };
 
-type nikkiItem = {
-  id:  number;
-  title:  string;
-  sleeptimemokuhyou : string;
-  sleeptimejisseki : string;
-  createAt:  Date;
-  updateAt:  Date;
+type TodoItem = {
+  id: null | number;
+  title: null | string;
+  detail: null | string;
+  // 0:NOT STARTED、1:DOING、2:DONE
+  status: null | 0 | 1 | 2;
+  priority: null | string;
+  createAt: null | Date;
+  updateAt: null | Date;
+  // all:TOPページ等に表示されるTODO LIST、draft:DRAFTページ、trash:trashページ
+  category: "all" | "draft" | "trash";
 };
 
 type category = "all" | "draft" | "trash";
 
-
-export default function Edit() {
-  const [input, setInput] = useState("");
-  const [nikkiList, setnikkiList] = useRecoilState<any>(nikkiListState);
-  const [nikkiItem, setnikkiItem] = useRecoilState<any>(nikkiItemState);
-  const onChangenikkiTitle = (event: ChangeEvent<HTMLInputElement>) =>
-    setnikkiItem({ ...nikkiItem, title: event.target.value });
-  const onChangenikkiDetail = (event: ChangeEvent<HTMLTextAreaElement>) =>
-    setnikkiItem({ ...nikkiItem, detail: event.target.value });
-  const onChangesleeptimeJisseki = (event: ChangeEvent<HTMLTextAreaElement>) =>
-    setnikkiItem({ ...nikkiItem, sleeptimejisseki: event.target.value });
-
+export default function TodoEdit() {
+  const [category, setCategory] = useState<category>("all");
+  const [todoList, setTodoList] = useRecoilState<any>(todoListState);
+  const [todoItem, setTodoItem] = useRecoilState<any>(todoItemState);
+  const onChangeTodoTitle = (event: ChangeEvent<HTMLInputElement>) =>
+    setTodoItem({ ...todoItem, title: event.target.value });
+  const onChangeTodoDetail = (event: ChangeEvent<HTMLTextAreaElement>) =>
+    setTodoItem({ ...todoItem, detail: event.target.value });
 
   const {
     handleSubmit,
@@ -58,41 +58,41 @@ export default function Edit() {
   } = useForm<FormInput>();
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<FormInput> = ({ title, detail,sleeptimejisseki,sleeptimemokuhyou}) => {
-    setnikkiItem((oldnikkiItem: nikkiItem) => ({
-      ...oldnikkiItem,
+  const onSubmit: SubmitHandler<FormInput> = ({ title, detail, priority }) => {
+    setTodoItem((oldTodoItem: TodoItem) => ({
+      ...oldTodoItem,
       title,
       detail,
-      sleeptimemokuhyou,
-      sleeptimejisseki,
+      status: 0,
+      priority,
       updateAt: changeDateFormat(new Date()),
     }));
 
-    const newArr = nikkiList.map((nikki: nikkiItem) =>
-      nikki.id === nikkiItem.id
+    const newArr = todoList.map((todo: TodoItem) =>
+      todo.id === todoItem.id
         ? {
-            ...nikki,
-            title: nikkiItem.title,
-            detail: nikkiItem.detail,
+            ...todo,
+            title: todoItem.title,
+            detail: todoItem.detail,
             updateAt: changeDateFormat(new Date()),
-            sleeptimejisseki: nikkiItem.sleeptimejisseki
           }
-        : nikki
+        : todo
     );
-    setnikkiList(newArr);
-    router.push("/Top");
+    setTodoList(newArr);
+    
+    if (category === "draft") {
+      router.push("/draft");
+    } else {
+      router.push("/TopTodo");
+    }
   };
 
-  console.log(nikkiList.createAt);
-
-  const resetButtonClick = () => {
-    setInput("");
-  };
+  console.log(todoList.createAt);
 
   return (
     <>
       <Head>
-        <title>nikki Edit</title>
+        <title>Todo Edit</title>
       </Head>
       <Header />
       <Container mt="16px" p="0" w="84.375%" maxW="1080px">
@@ -104,9 +104,9 @@ export default function Edit() {
               lineHeight="33px"
               color="blackAlpha.800"
             >
-              EDIT nikki
+              EDIT TODO
             </Text>
-            
+            <Spacer />
             <Button
               w="112px"
               h="40px"
@@ -118,45 +118,12 @@ export default function Edit() {
               borderWidth="1px"
               borderColor="blackAlpha.800"
               borderRadius="50px"
-              mr="0"
-              ml="auto"
               onClick={() => router.back()}
             >
               Back
             </Button>
           </Flex>
           <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
-          <FormControl isInvalid={errors.detail ? true : false}>
-              <FormLabel
-                // FormControlにmt:8pxがあるため、FormLabelのmtは16pxに設定
-                m="16px 0 0 0"
-                fontSize="24px"
-                fontWeight="bold"
-                lineHeight="24px"
-                color="blackAlpha.800"
-              >
-                睡眠時間(実績)
-              </FormLabel>
-              <Textarea
-                id="sleeptaimejisseki"
-                h="30px"
-                mt="4px"
-                fontSize="24px"
-                fontWeight="bold"
-                color="blackAlpha.800"
-                borderWidth="1px"
-                borderColor="blackAlpha.800"
-                borderRadius="10px"
-                value={nikkiItem.sleeptimejisseki}
-                {...register("sleeptimejisseki", {
-                  required: "睡眠時間の入力は必須です",
-                })}
-                onChange={(e) => onChangesleeptimeJisseki(e)}
-              />
-              <FormErrorMessage>
-                {errors.sleeptimejisseki && errors.sleeptimejisseki.message}
-              </FormErrorMessage>
-            </FormControl>
             <FormControl isInvalid={errors.title ? true : false}>
               <FormLabel
                 m="0"
@@ -172,6 +139,7 @@ export default function Edit() {
                 id="title"
                 h="72px"
                 mt="4px"
+                w="100%"
                 p="8px 16px"
                 fontSize="24px"
                 fontWeight="bold"
@@ -180,11 +148,11 @@ export default function Edit() {
                 borderColor="blackAlpha.800"
                 borderRadius="10px"
                 type="Text"
-                value={nikkiItem.title}
+                value={todoItem.title}
                 {...register("title", {
                   required: "TITLEは必須です",
                 })}
-                onChange={(e) => onChangenikkiTitle(e)}
+                onChange={(e) => onChangeTodoTitle(e)}
               />
               <FormErrorMessage>
                 {errors.title && errors.title.message}
@@ -205,17 +173,18 @@ export default function Edit() {
                 id="detail"
                 h="208px"
                 mt="4px"
+                w="100%"
                 fontSize="24px"
                 fontWeight="bold"
                 color="blackAlpha.800"
                 borderWidth="1px"
                 borderColor="blackAlpha.800"
                 borderRadius="10px"
-                value={nikkiItem.detail}
+                value={todoItem.detail}
                 {...register("detail", {
                   required: "DETAILは必須です",
                 })}
-                onChange={(e) => onChangenikkiDetail(e)}
+                onChange={(e) => onChangeTodoDetail(e)}
               />
               <FormErrorMessage>
                 {errors.detail && errors.detail.message}
@@ -242,7 +211,7 @@ export default function Edit() {
                   lineHeight="20px"
                   color="blackAlpha.800"
                 >
-                  {nikkiItem.createAt}
+                  {todoItem.createAt}
                 </Text>
               </Flex>
 
@@ -262,7 +231,7 @@ export default function Edit() {
                   lineHeight="20px"
                   color="blackAlpha.800"
                 >
-                  {nikkiItem.updateAt}
+                  {todoItem.updateAt}
                 </Text>
               </Flex>
             </Flex>
@@ -282,8 +251,7 @@ export default function Edit() {
                 borderWidth="1px"
                 borderColor="blackAlpha.800"
                 borderRadius="50px"
-                mr="0"
-                ml="auto"
+                onClick={() => setCategory("all")}
               >
                 UPDATE
               </Button>
