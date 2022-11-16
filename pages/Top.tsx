@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState ,useMemo } from "react";
 import { Header } from '../components/Header'
 import {
   Center,
   Container,
-  Flex,
   HStack,
   Spacer,
   Stack,
@@ -23,6 +22,7 @@ import {
   Td,
   Tbody,
   ButtonProps,
+  Flex,
 } from "@chakra-ui/react";
 import { nikkiListState, nikkiItemState } from "../src/atoms/states";
 import { filterNikkiList } from "../util/filterNikkiLit";
@@ -62,6 +62,43 @@ export default function Top() {
   );
 
   const router = useRouter();
+  const pagesQuantity = 5;
+  const { currentPage, setCurrentPage } = usePaginator({
+    initialState: { currentPage: 1 },
+  });
+  
+  const normalStyles: ButtonProps = {
+    w: "40px",
+    fontSize: "sm",
+    _hover: {
+      bg: "green.300",
+    },
+  };
+
+  const activeStyles: ButtonProps = {
+    w: "40px",
+    fontSize: "sm",
+    _hover: {
+      bg: "green.300",
+    },
+  };
+
+  const separatorStyles: ButtonProps = {
+    w: 7,
+    bg: "green.200",
+  };
+
+  //ページネーション機能
+  const pagination = useMemo(() => {
+    const startNumber = 0 + 6 * (currentPage - 1);
+
+    const endNumber = 5 + 6 * (currentPage - 1);
+
+    return filterNikkis.slice(startNumber, endNumber);
+  }, [currentPage, filterNikkis]);
+  
+
+
   const handleSelectNikki = (
     id: number,
     title: string,
@@ -100,35 +137,8 @@ export default function Top() {
     setcreatetimeinput("");
   };
 
-  const pagesQuantity = 5;
-  const { currentPage, setCurrentPage } = usePaginator({
-    initialState: { currentPage: 1 },
-  });
-
-  const normalStyles: ButtonProps = {
-    w: "40px",
-    fontSize: "sm",
-    _hover: {
-      bg: "green.300",
-    },
-  };
-
-  const activeStyles: ButtonProps = {
-    w: "40px",
-    fontSize: "sm",
-    _hover: {
-      bg: "green.300",
-    },
-  };
-
-  const separatorStyles: ButtonProps = {
-    w: 7,
-    bg: "green.200",
-  };
-
   return (
     <Layout title="TOP">
-    <Header />
       <Container mt={`16px`}>
       <Flex w="100%">
         <Text
@@ -320,7 +330,7 @@ export default function Top() {
         
               {isClient && (
                 <Tbody>
-                  {filterNikkis.map((nikki)=>{
+                  {pagination.map((nikki:any)=>{
                     return(
                       <Tr key={nikki.id}>
                         <Td
@@ -434,3 +444,4 @@ export default function Top() {
     </Layout>
   )
 }
+

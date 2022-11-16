@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Header } from '../components/Header'
 import {
   Center,
@@ -50,6 +50,13 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import {
+  Paginator,
+  Previous,
+  Next,
+  PageGroup,
+  usePaginator,
+} from "chakra-paginator";
 
 ChartJS.register(
   CategoryScale,
@@ -134,6 +141,42 @@ export default function TopTaijuu() {
       },
     ],
   };
+
+  const pagesQuantity = 5;
+  const { currentPage, setCurrentPage } = usePaginator({
+    initialState: { currentPage: 1 },
+  });
+  
+  const normalStyles: ButtonProps = {
+    w: "40px",
+    fontSize: "sm",
+    _hover: {
+      bg: "green.300",
+    },
+  };
+
+  const activeStyles: ButtonProps = {
+    w: "40px",
+    fontSize: "sm",
+    _hover: {
+      bg: "green.300",
+    },
+  };
+
+  const separatorStyles: ButtonProps = {
+    w: 7,
+    bg: "green.200",
+  };
+
+  //ページネーション機能
+  const pagination = useMemo(() => {
+    const startNumber = 0 + 6 * (currentPage - 1);
+
+    const endNumber = 7 + 8 * (currentPage - 1);
+
+    return filterTaijuus.slice(startNumber, endNumber);
+  }, [currentPage, filterTaijuus]);
+
 
   console.log(taijuuList)
   console.log(filterTaijuus)
@@ -308,7 +351,7 @@ export default function TopTaijuu() {
         
               {isClient && (
                 <Tbody>
-                  {filterTaijuus.map((taijuu)=>{
+                  {pagination.map((taijuu)=>{
                     return(
                       <Tr key={taijuu.id}>
                         <Td
@@ -365,6 +408,29 @@ export default function TopTaijuu() {
               )}
               </Table>
             </TableContainer>
+            <Paginator
+              pagesQuantity={pagesQuantity}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+              activeStyles={activeStyles}
+              normalStyles={normalStyles}
+              separatorStyles={separatorStyles}
+            >
+              <Flex
+                alignItems={`center`}
+                justifyContent={`space-between`}
+                w={`352px`}
+                p={`12px`}
+              >
+                <Previous>
+                  <ChevronLeftIcon />
+                </Previous>
+                <PageGroup isInline align={`center`} />
+                <Next>
+                  <ChevronRightIcon />
+                </Next>
+              </Flex>
+            </Paginator>
           </VStack>
         </Center>
       </Container>

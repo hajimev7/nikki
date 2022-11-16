@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Header } from '../components/Header'
 import {
   Center,
@@ -128,6 +128,15 @@ export default function Top() {
     w: 7,
     bg: "green.200",
   };
+
+    //ページネーション機能
+    const pagination = useMemo(() => {
+      const startNumber = 0 + 6 * (currentPage - 1);
+  
+      const endNumber = 5 + 6 * (currentPage - 1);
+  
+      return filterTodos.slice(startNumber, endNumber);
+    }, [currentPage, filterTodos]);
  
 
 
@@ -323,7 +332,7 @@ export default function Top() {
         
               {isClient && (
                  <Tbody>
-                 {filterTodos.map((todo) => {
+                 {pagination.map((todo) => {
                    return (
                      <Tr key={todo.id}>
                        <Td
