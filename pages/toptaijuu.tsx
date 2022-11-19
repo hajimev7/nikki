@@ -128,19 +128,7 @@ export default function TopTaijuu() {
     },
   };
 
-  const labels = filterTaijuus.map(taijuu => taijuu.createAt);
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: "データ1",
-        data: filterTaijuus.map(taijuu => taijuu.taijuu) ,
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-      },
-    ],
-  };
+  
 
   const pagesQuantity = 5;
   const { currentPage, setCurrentPage } = usePaginator({
@@ -170,12 +158,26 @@ export default function TopTaijuu() {
 
   //ページネーション機能
   const pagination = useMemo(() => {
-    const startNumber = 0 + 6 * (currentPage - 1);
+    const startNumber = 0 + 7 * (currentPage - 1);
 
     const endNumber = 7 + 8 * (currentPage - 1);
 
     return filterTaijuus.slice(startNumber, endNumber);
   }, [currentPage, filterTaijuus]);
+
+  const labels = pagination.map(taijuu => taijuu.createAt);
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "データ1",
+        data: pagination.map(taijuu => taijuu.taijuu) ,
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+    ],
+  };
 
 
   console.log(taijuuList)

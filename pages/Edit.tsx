@@ -104,7 +104,7 @@ export default function Edit() {
               lineHeight="33px"
               color="blackAlpha.800"
             >
-              EDIT nikki
+              日記編集ページ
             </Text>
             
             <Button
@@ -170,9 +170,10 @@ export default function Edit() {
               </FormLabel>
               <Input
                 id="title"
-                h="72px"
+                h="36px"
                 mt="4px"
                 p="8px 16px"
+                w="100%"
                 fontSize="24px"
                 fontWeight="bold"
                 color="blackAlpha.800"
@@ -205,6 +206,7 @@ export default function Edit() {
                 id="detail"
                 h="208px"
                 mt="4px"
+                w="100%"
                 fontSize="24px"
                 fontWeight="bold"
                 color="blackAlpha.800"

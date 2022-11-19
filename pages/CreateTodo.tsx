@@ -129,16 +129,6 @@ export default function CreateTodo() {
           </Flex>
           <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={errors.title ? true : false}>
-            <FormLabel
-                m="0"
-                fontSize="24px"
-                fontWeight="bold"
-                lineHeight="24px"
-                color="blackAlpha.800"
-                htmlFor="title"
-              >
-                起床時間
-              </FormLabel>
               <FormLabel
                 m="0"
                 w="200%"
@@ -265,24 +255,6 @@ export default function CreateTodo() {
               >
                 CREATE
               </Button>
-              {/* <Button
-                type="submit"
-                w="112px"
-                h="40px"
-                // Flexにmt:8pxがあるため、Buttonのmtは4pxに設定
-                mt="4px"
-                p="0"
-                fontSize="18px"
-                fontWeight="bold"
-                bg="pink.100"
-                color="blackAlpha.800"
-                borderWidth="1px"
-                borderColor="blackAlpha.800"
-                borderRadius="50px"
-                onClick={() => setCategory("draft")}
-              >
-                DRAFT
-              </Button> */}
             </Flex>
           </form>
         </VStack>

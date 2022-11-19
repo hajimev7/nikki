@@ -86,7 +86,7 @@ export default function Create() {
               </Button>
           </Flex>
           <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)} >
-          <Flex w="100%" bg="yellow">
+          <Flex w="100%">
           <FormControl>
               <FormLabel 
                 m="0"
