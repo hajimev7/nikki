@@ -213,6 +213,7 @@ export default function CreateTodo() {
                       High
                     </Text>
                   </Radio>
+                  
                   <Radio value="Middle" {...register("priority")}>
                     <Text
                       fontSize="24px"
