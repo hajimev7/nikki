@@ -203,7 +203,7 @@ export default function CreateTodo() {
               </FormLabel>
               <RadioGroup mt="4px" onChange={setValue} value={value}>
                 <Stack h="28px" spacing="24px" direction="row">
-                  <Radio value="High" {...register("priority")}>
+                  <Radio value="High" {...register("priority")} size="md">
                     <Text
                       fontSize="24px"
                       fontWeight="bold"
