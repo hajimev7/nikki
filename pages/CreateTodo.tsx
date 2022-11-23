@@ -16,6 +16,7 @@ import {
   Text,
   Textarea,
   VStack,
+  ChakraProvider
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
@@ -191,6 +192,7 @@ export default function CreateTodo() {
                 {errors.detail && errors.detail.message}
               </FormErrorMessage>
             </FormControl>
+            <ChakraProvider>
             <FormControl>
               <FormLabel
                 // FormControlにmt:8pxがあるため、FormLabelのmtは16pxに設定
@@ -237,6 +239,7 @@ export default function CreateTodo() {
                 </Stack>
               </RadioGroup>
             </FormControl>
+            </ChakraProvider>
             <Flex w="100%" flexDirection="row-reverse">
               <Button
                 type="submit"
